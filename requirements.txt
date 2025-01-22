@@ -1,0 +1,6 @@
+#List any dependencies here, for example:
+numpy==2.2.2
+clyent==1.2.1
+PyYAML==6.0.1
+requests==2.31.0
+streamlit
