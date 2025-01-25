@@ -1,6 +1,11 @@
-#List any dependencies here, for example:
-numpy==2.2.2
+# filepath: /Users/nithishkotte/Desktop/Bank docs/Restuarant Software2.0/Restuarant-Software2.0/requirements.txt
+numpy>=1.21,<1.25
 clyent==1.2.1
 PyYAML==6.0.1
 requests==2.31.0
-streamlit
+streamlit==1.25.0
+pandas==2.1.1
+blosc2~=2.0.0
+cython>=0.29.21
+FuzzyTM>=0.4.0
+pyarrow==11.0.0

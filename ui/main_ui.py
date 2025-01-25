@@ -4,6 +4,7 @@ from inventory.inventory import Inventory
 from menu.menu import Menu
 from reporting.reporting import Reporting
 from recipe.recipe import Recipe
+from InventoryOrderEstimation.inventoryOrderEstimation import calculate_orders
 
 class RestaurantSoftwareApp:
     def __init__(self):
@@ -18,10 +19,8 @@ class RestaurantSoftwareApp:
         st.title("Restaurant Software")
 
         # Create navigation
-        menu = ["POS", "Inventory", "Menu", "Reservation", "Customer", "Reporting", "Employee", "Recipe"]
+        menu = ["POS", "Inventory", "Menu", "Reservation", "Customer", "Reporting", "Employee", "Recipe", "Order Estimation"]
         choice = st.sidebar.selectbox("Select Module", menu)
-
-        #dummmy comment
 
         if choice == "POS":
             self.pos_ui()
@@ -33,6 +32,8 @@ class RestaurantSoftwareApp:
             self.reporting_ui()
         elif choice == "Recipe":
             self.recipe_ui()
+        elif choice == "Order Estimation":
+            self.order_estimation_ui()
 
     def pos_ui(self):
         st.header("POS System")
@@ -77,6 +78,32 @@ class RestaurantSoftwareApp:
         if st.button("Get Recipe"):
             recipe = self.recipe.get_recipe(name)
             st.write(recipe)
+
+    def order_estimation_ui(self):
+        st.header("Order Estimation")
+        if st.button("Calculate Orders"):
+            inventory = {
+                'rice': {'quantity': 100, 'cost': 1.0},
+                'chicken': {'quantity': 50, 'cost': 5.0},
+                'spices': {'quantity': 10, 'cost': 2.0},
+                'yogurt': {'quantity': 20, 'cost': 3.0},
+                'onion': {'quantity': 30, 'cost': 1.5},
+            }
+            menu = [
+                {
+                    'name': 'Chicken Biryani',
+                    'price': 170.0,
+                    'ingredients': {
+                        'rice': 0.3,
+                        'chicken': 0.2,
+                        'spices': 0.05,
+                        'yogurt': 0.1,
+                        'onion': 0.1
+                    }
+                }
+            ]
+            results = calculate_orders(inventory, menu)
+            st.write(results)
 
 if __name__ == "__main__":
     app = RestaurantSoftwareApp()
