@@ -25,8 +25,13 @@ def main():
     inventory.add_item("Tomato", 50)
     inventory.remove_item("Tomato", 20)
 
-    menu.add_item("Pasta", 12.99)
-    menu.remove_item("Pasta")
+    # Add and remove items from the menu
+    item_id = input("Enter item ID: ")
+    category_id = input("Enter category ID: ")
+    item_name = input("Enter item name: ")
+    price = float(input("Enter item price: "))
+    menu.add_item(item_id, category_id, item_name, price)
+    menu.remove_item(item_id, category_id)
 
     reporting.generate_sales_report(pos.orders)
 
