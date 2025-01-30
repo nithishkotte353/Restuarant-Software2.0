@@ -54,12 +54,18 @@ class RestaurantSoftwareApp:
 
     def menu_ui(self):
         st.header("Menu Management")
-        item = st.text_input("Item")
+        item_id = st.text_input("Item ID")
+        category_id = st.text_input("Category ID")
+        item_name = st.text_input("Item Name")
         price = st.number_input("Price", min_value=0.0, format="%.2f")
+        
         if st.button("Add Item"):
-            self.menu.add_item(item, price)
+            self.menu.add_item(item_id, category_id, item_name, price)
+            st.success(f"Added item {item_name} with price {price} to menu")
+        
         if st.button("Remove Item"):
-            self.menu.remove_item(item)
+            self.menu.remove_item(item_id, category_id)
+            st.success(f"Removed item with ID {item_id} from menu")
 
     def reporting_ui(self):
         st.header("Reporting and Analytics")
