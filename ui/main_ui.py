@@ -45,10 +45,12 @@ class RestaurantSoftwareApp:
 
     def inventory_ui(self):
         st.header("Inventory Management")
+        item_id = st.text_input("Item ID")
+        category_id = st.text_input("Category ID")
         item = st.text_input("Item")
         quantity = st.number_input("Quantity", min_value=0)
         if st.button("Add Item"):
-            self.inventory.add_item(item, quantity)
+            self.inventory.add_inventory_item(item_id, category_id, item, quantity)
         if st.button("Remove Item"):
             self.inventory.remove_item(item, quantity)
 
@@ -61,11 +63,11 @@ class RestaurantSoftwareApp:
         
         if st.button("Add Item"):
             self.menu.add_item(item_id, category_id, item_name, price)
-            st.success(f"Added item {item_name} with price {price} to menu")
+            st.success(f"Added item {item_name} with price {price}")
         
         if st.button("Remove Item"):
             self.menu.remove_item(item_id, category_id)
-            st.success(f"Removed item with ID {item_id} from menu")
+            st.success(f"Removed item with ID {item_id} ")
 
     def reporting_ui(self):
         st.header("Reporting and Analytics")

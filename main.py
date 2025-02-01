@@ -22,8 +22,13 @@ def main():
     pos.create_order("Order 1")
     pos.process_payment("Order 1", 100)
 
-    inventory.add_item("Tomato", 50)
-    inventory.remove_item("Tomato", 20)
+  
+    inventory_itemid = input("Enter inventory item ID: ")
+    inventory_categoryid = input("Enter inventory category ID: ")
+    inventory_item = input("Enter inventory item: ")    
+    quantity = input("Enter quantity: ")
+    inventory.add_inventory_item(inventory_itemid, inventory_categoryid, inventory_item, quantity)
+    inventory.remove_inventory_item(inventory_itemid, inventory_categoryid, quantity)
 
     # Add and remove items from the menu
     item_id = input("Enter item ID: ")
