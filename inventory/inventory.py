@@ -33,7 +33,7 @@ class Inventory:
             'categoryId': category_id,
             'name': item_name
         }
-        self.add_item(item, quantity)
+        #self.add_item(item, quantity)
         self.container.upsert_item(item)
         print(f"Added item {item_name} and quantity {quantity} to inventory and Cosmos DB")
 
