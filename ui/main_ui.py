@@ -51,8 +51,11 @@ class RestaurantSoftwareApp:
         quantity = st.number_input("Quantity", min_value=0)
         if st.button("Add Item"):
             self.inventory.add_inventory_item(item_id, category_id, item, quantity)
+            st.success(f"Added item {item} with quantity {quantity}")
+        
         if st.button("Remove Item"):
             self.inventory.remove_item(item, quantity)
+            st.success(f"Added item {item}")
 
     def menu_ui(self):
         st.header("Menu Management")
