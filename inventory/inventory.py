@@ -1,17 +1,16 @@
 from azure.cosmos import CosmosClient,PartitionKey, exceptions
+from utils.cosmos_utils import init_cosmos_client
 
 class Inventory:
-    def __init__(self):
+    cosmos_endpoint = "https://restuarant-cosmosdb.documents.azure.com:443/"
+    cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A==;"
+
+    def __init__(self, cosmos_endpoint, cosmos_key):
         self.items = {}
-        self.cosmos_client = self.init_cosmos_client()
+        self.cosmos_client = init_cosmos_client(cosmos_endpoint, cosmos_key)
         self.database_name = 'RestaurantDatabase'
         self.container_name = 'InventoryContainer'
         self.container = self.create_container(self.database_name, self.container_name)
-
-    def init_cosmos_client(self):
-        # Replace with your actual connection string
-        connection_string = "AccountEndpoint=https://restuarant-cosmosdb.documents.azure.com:443/;AccountKey=BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A==;"
-        return CosmosClient.from_connection_string(connection_string)
     
     def create_container(self, database, container_name):
         try:
