@@ -38,7 +38,7 @@ def main():
     pos.process_payment("Order 1", 100)
 
     while True:
-        action = input("Enter 'add' to add an item, 'remove' to remove an item from inventory, 'menu' to manage menu items, 'recipe' to manage recipes, or 'exit' to quit: ").strip().lower()
+        action = input("'inventory' to manage inventory, 'menu' to manage menu items, 'recipe' to manage recipes, or 'exit' to quit: ").strip().lower()
         if action == 'exit':
             break
         elif action == 'inventory':
