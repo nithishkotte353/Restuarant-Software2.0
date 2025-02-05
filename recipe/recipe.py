@@ -28,6 +28,7 @@ class Recipe:
 
     def add_recipe(self, name, ingredients):
         recipe = {
+            'id': name,  # Ensure 'id' is used as the unique identifier
             'name': name,
             'ingredients': ingredients
         }

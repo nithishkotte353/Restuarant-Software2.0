@@ -52,18 +52,16 @@ class RestaurantSoftwareApp:
 
     def inventory_ui(self):
         st.header("Inventory Management")
-        item_id = st.text_input("Item ID")
-        category_id = st.text_input("Category ID")
         item_name = st.text_input("Item Name")
         quantity = st.number_input("Quantity", min_value=0)
         
         if st.button("Add Item"):
-            self.inventory.add_inventory_item(item_id, category_id, item_name, quantity)
+            self.inventory.add_inventory_item(item_name, quantity)
             st.success(f"Added item {item_name} and quantity {quantity} to inventory")
         
         if st.button("Remove Item"):
-            self.inventory.remove_inventory_item(item_id, category_id, quantity)
-            st.success(f"Removed item with ID {item_id} and quantity {quantity} from inventory")
+            self.inventory.remove_inventory_item(item_name, quantity)
+            st.success(f"Removed item with ID {item_name} and quantity {quantity} from inventory")
 
     def menu_ui(self):
         st.header("Menu Management")

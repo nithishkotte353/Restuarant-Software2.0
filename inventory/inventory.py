@@ -26,26 +26,24 @@ class Inventory:
             print(f"Container '{self.container_name}' already exists.")
             return self.cosmos_client.get_database_client(self.database_name).get_container_client(self.container_name)
 
-    def add_inventory_item(self, item_id, category_id, item_name, quantity):
+    def add_inventory_item(self, item_name, quantity):
         item = {
-            'id': item_id,
-            'categoryId': category_id,
+            'id': item_name,
             'name': item_name
         }
-        #self.add_item(item, quantity)
+        self.add_item(item, quantity)
         self.container.upsert_item(item)
         print(f"Added item {item_name} and quantity {quantity} to inventory and Cosmos DB")
 
-    def remove_inventory_item(self, item_id, category_id, quantity):
+    def remove_inventory_item(self, item_name, quantity):
         item = {
-            'id': item_id,
-            'categoryId': category_id
+            'id': item_name
         }
         self.remove_item(item, quantity)
         
         # Assuming you want to remove the item from Cosmos DB as well
-        self.container.delete_item(item, partition_key=category_id)
-        print(f"Removed item with ID {item_id} and quantity {quantity} from inventory and Cosmos DB")
+        self.container.delete_item(item, partition_key=item_name)
+        print(f"Removed item with ID {item_name} and quantity {quantity} from inventory and Cosmos DB")
 
     def add_item(self, item, quantity):
         self.items[item] = self.items.get(item, 0) + quantity

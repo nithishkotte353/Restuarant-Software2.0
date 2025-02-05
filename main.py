@@ -43,15 +43,13 @@ def main():
             break
         elif action == 'inventory':
             inventory_action = input("Enter 'add' to add an item to inventory or 'remove' to remove an item from inventory: ").strip().lower()
-            inventory_item_id = input("Enter item ID: ").strip()
-            inventory_category_id = input("Enter category ID: ").strip()
             if inventory_action == 'add':
                 inventory_item_name = input("Enter item name: ").strip()
                 inventory_quantity = int(input("Enter quantity: ").strip())
-                inventory.add_inventory_item(inventory_item_id, inventory_category_id, inventory_item_name, inventory_quantity)
+                inventory.add_inventory_item(inventory_item_name, inventory_quantity)
                 print(f"Added item {inventory_item_name} in inventory")
             elif inventory_action == 'remove':
-                inventory.remove_inventory_item(inventory_item_id, inventory_category_id, inventory_quantity)
+                inventory.remove_inventory_item(inventory_quantity)
                 print(f"Removed item with ID {inventory_item_name} from inventory")
             else:
                 print("Invalid inventory action. Please enter 'add' or 'remove'.")
