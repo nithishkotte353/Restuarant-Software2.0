@@ -27,20 +27,29 @@ def main():
     # Initialize modules
     cosmos_client = init_cosmos_client(cosmos_endpoint, cosmos_key)
 
-    pos = POS()
+    pos = POS(cosmos_endpoint, cosmos_key)
     inventory = Inventory(cosmos_endpoint, cosmos_key)
     menu = Menu(cosmos_endpoint, cosmos_key)
     reporting = Reporting()
     recipe = Recipe(cosmos_endpoint, cosmos_key)
 
-    # Example usage
-    pos.create_order("Order 1")
-    pos.process_payment("Order 1", 100)
-
     while True:
-        action = input("'inventory' to manage inventory, 'menu' to manage menu items, 'recipe' to manage recipes, or 'exit' to quit: ").strip().lower()
+        action = input("'pos' to manage POS, 'inventory' to manage inventory, 'menu' to manage menu items, 'recipe' to manage recipes, or 'exit' to quit: ").strip().lower()
         if action == 'exit':
             break
+        elif action == 'pos':
+            pos_action = input("Enter 'create' to create an order or 'process' to process a payment: ").strip().lower()
+            if pos_action == 'create':
+                order_id = input("Enter order ID: ").strip()
+                pos.create_order(order_id)
+                print(f"Created order {order_id} in POS")
+            elif pos_action == 'process':
+                order_id = input("Enter order ID: ").strip()
+                amount = float(input("Enter payment amount: ").strip())
+                pos.process_payment(order_id, amount)
+                print(f"Processed payment of {amount} for order {order_id}")
+            else:
+                print("Invalid POS action. Please enter 'create' or 'process'.")
         elif action == 'inventory':
             inventory_action = input("Enter 'add' to add an item to inventory or 'remove' to remove an item from inventory: ").strip().lower()
             if inventory_action == 'add':
@@ -73,12 +82,14 @@ def main():
             if recipe_action == 'add':
                 ingredients = input("Enter ingredients (comma-separated): ").strip().split(',')
                 recipe.add_recipe(name, ingredients)
+                print(f"Added recipe {name} with ingredients {ingredients}")
             elif recipe_action == 'remove':
                 recipe.remove_recipe(name)
+                print(f"Removed recipe {name}")
             else:
                 print("Invalid recipe action. Please enter 'add' or 'remove'.")
         else:
-            print("Invalid action. Please enter 'add', 'remove', 'menu', 'recipe', or 'exit'.")
+            print("Invalid action. Please enter 'pos', 'inventory', 'menu', 'recipe', or 'exit'.")
 
 if __name__ == "__main__":
     app = RestaurantSoftwareApp()

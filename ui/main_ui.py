@@ -10,10 +10,13 @@ class RestaurantSoftwareApp:
     def __init__(self):
         # Define Cosmos DB endpoint and key
         cosmos_endpoint = "https://restuarant-cosmosdb.documents.azure.com:443/"
-        cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A==;"
+        cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A=="
+
+        # Initialize Cosmos DB client
+        cosmos_client = init_cosmos_client(cosmos_endpoint, cosmos_key)
 
         # Initialize modules
-        self.pos = POS()
+        self.pos = POS(cosmos_endpoint, cosmos_key)
         self.inventory = Inventory(cosmos_endpoint, cosmos_key)
         self.menu = Menu(cosmos_endpoint, cosmos_key)
         self.reporting = Reporting()
@@ -32,8 +35,6 @@ class RestaurantSoftwareApp:
             self.inventory_ui()
         elif choice == "Menu":
             self.menu_ui()
-        elif choice == "Reporting":
-            self.reporting_ui()
         elif choice == "Recipe":
             self.recipe_ui()
 
