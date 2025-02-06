@@ -29,29 +29,38 @@ class Inventory:
     def add_inventory_item(self, item_name, quantity):
         item = {
             'id': item_name,
-            'name': item_name
+            'name': item_name,
+            'quantity': quantity
         }
-        #self.add_item(item, quantity)
+        self.items[item_name] = self.items.get(item_name, 0) + quantity
         self.container.upsert_item(item)
-        print(f"Added item {item_name} and quantity {quantity} to inventory and Cosmos DB")
+        print(f"Added item {item_name} with quantity {quantity} to inventory and Cosmos DB")
 
     def remove_inventory_item(self, item_name, quantity):
-        item = {
-            'id': item_name
-        }
-        self.remove_item(item, quantity)
-        
-        # Assuming you want to remove the item from Cosmos DB as well
-        self.container.delete_item(item, partition_key=item_name)
-        print(f"Removed item with ID {item_name} and quantity {quantity} from inventory and Cosmos DB")
+        if item_name in self.items and self.items[item_name] >= quantity:
+            self.items[item_name] -= quantity
+            if self.items[item_name] == 0:
+                del self.items[item_name]
+                self.container.delete_item(item_name, partition_key=item_name)
+                print(f"Removed item {item_name} from inventory and Cosmos DB")
+            else:
+                item = {
+                    'id': item_name,
+                    'name': item_name,
+                    'quantity': self.items[item_name]
+                }
+                self.container.upsert_item(item)
+                print(f"Updated item {item_name} with new quantity {self.items[item_name]} in inventory and Cosmos DB")
+        else:
+            print(f"Not enough of item {item_name} in inventory to remove {quantity}")
 
     def add_item(self, item, quantity):
-        self.items[item] = self.items.get(item, 0) + quantity
-        print(f"Added {quantity} of {item} to inventory")
+        self.items[item['id']] = self.items.get(item['id'], 0) + quantity
+        print(f"Added {quantity} of item {item['id']} to inventory")
 
     def remove_item(self, item, quantity):
-        if item in self.items and self.items[item] >= quantity:
-            self.items[item] -= quantity
-            print(f"Removed {quantity} of {item} from inventory")
+        if item['id'] in self.items and self.items[item['id']] >= quantity:
+            self.items[item['id']] -= quantity
+            print(f"Removed {quantity} of item {item['id']} from inventory")
         else:
-            print(f"Not enough {item} in inventory")
+            print(f"Not enough of item {item['id']} in inventory to remove {quantity}")
