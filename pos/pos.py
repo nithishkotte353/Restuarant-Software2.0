@@ -2,10 +2,9 @@ from azure.cosmos import PartitionKey, exceptions
 from utils.cosmos_utils import init_cosmos_client
 
 class POS:
-    # Define Cosmos DB endpoint and key
+     # Define Cosmos DB endpoint and key
     cosmos_endpoint = "https://restuarant-cosmosdb.documents.azure.com:443/"
     cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A=="
-
     def __init__(self, cosmos_endpoint, cosmos_key):
         self.orders = []
         self.cosmos_client = init_cosmos_client(cosmos_endpoint, cosmos_key)
@@ -29,7 +28,7 @@ class POS:
 
     def create_order(self, order_id):
         order = {
-            'id': order_id,
+            'id': order_id,  # Ensure 'id' is used as the unique identifier
             'orderId': order_id
         }
         self.orders.append(order)
@@ -37,4 +36,10 @@ class POS:
         print(f"Order created: {order}")
 
     def process_payment(self, order_id, amount):
-        print(f"Processing payment for order {order_id} with amount {amount}")
+        try:
+            order = self.container.read_item(item=order_id, partition_key=order_id)
+            order['amount'] = amount
+            self.container.upsert_item(order)
+            print(f"Processed payment for order {order_id} with amount {amount}")
+        except exceptions.CosmosResourceNotFoundError:
+            print(f"Order {order_id} not found in Cosmos DB")
