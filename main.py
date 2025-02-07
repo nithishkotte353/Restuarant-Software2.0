@@ -5,24 +5,10 @@ from reporting.reporting import Reporting
 from recipe.recipe import Recipe
 from utils.cosmos_utils import init_cosmos_client
 
-from ui.main_ui import RestaurantSoftwareApp
-
-def add_inventory_item(inventory):
-    item_id = input("Enter item ID: ").strip()
-    item_name = input("Enter item name: ").strip()
-    quantity = int(input("Enter quantity: ").strip())
-    inventory.add_item(item_id, item_name, quantity)
-    print(f"Added {quantity} of {item_name} to inventory")
-
-def remove_inventory_item(inventory):
-    item_id = input("Enter item ID to remove: ").strip()
-    inventory.remove_item(item_id)
-    print(f"Removed item with ID {item_id} from inventory")
-
 def main():
     # Define Cosmos DB endpoint and key
     cosmos_endpoint = "https://restuarant-cosmosdb.documents.azure.com:443/"
-    cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A==;"
+    cosmos_key = "BfgdJzuIq6DKgvvEEJAfxaXrUZiZL2D6rzt7MoRC2tHwLVcD2zPCj9E1Lush577j62Y4dqH3FVcIACDbaLJ68A=="
 
     # Initialize modules
     cosmos_client = init_cosmos_client(cosmos_endpoint, cosmos_key)
@@ -30,7 +16,7 @@ def main():
     pos = POS(cosmos_endpoint, cosmos_key)
     inventory = Inventory(cosmos_endpoint, cosmos_key)
     menu = Menu(cosmos_endpoint, cosmos_key)
-    reporting = Reporting()
+    reporting = Reporting(cosmos_endpoint, cosmos_key)
     recipe = Recipe(cosmos_endpoint, cosmos_key)
 
     while True:
@@ -53,13 +39,15 @@ def main():
         elif action == 'inventory':
             inventory_action = input("Enter 'add' to add an item to inventory or 'remove' to remove an item from inventory: ").strip().lower()
             if inventory_action == 'add':
-                inventory_item_name = input("Enter item name: ").strip()
-                inventory_quantity = int(input("Enter quantity: ").strip())
-                inventory.add_inventory_item(inventory_item_name, inventory_quantity)
-                print(f"Added item {inventory_item_name} in inventory")
+                item_name = input("Enter item name: ").strip()
+                quantity = int(input("Enter quantity: ").strip())
+                inventory.add_inventory_item(item_name, quantity)
+                print(f"Added item {item_name} with quantity {quantity} to inventory")
             elif inventory_action == 'remove':
-                inventory.remove_inventory_item(inventory_quantity)
-                print(f"Removed item with ID {inventory_item_name} from inventory")
+                item_name = input("Enter item name: ").strip()
+                quantity = int(input("Enter quantity: ").strip())
+                inventory.remove_inventory_item(item_name, quantity)
+                print(f"Removed item {item_name} with quantity {quantity} from inventory")
             else:
                 print("Invalid inventory action. Please enter 'add' or 'remove'.")
         elif action == 'menu':
@@ -88,10 +76,22 @@ def main():
                 print(f"Removed recipe {name}")
             else:
                 print("Invalid recipe action. Please enter 'add' or 'remove'.")
+        elif action == 'reporting':
+            report_action = input("Enter 'sales' to generate sales report or 'inventory' to generate inventory report: ").strip().lower()
+            if report_action == 'sales':
+                report = reporting.generate_sales_report()
+                print("Sales Report:")
+                for order_id, amount in report.items():
+                    print(f"Order ID: {order_id}, Amount: {amount}")
+            elif report_action == 'inventory':
+                report = reporting.generate_inventory_report()
+                print("Inventory Report:")
+                for item_id, details in report.items():
+                    print(f"Item ID: {item_id}, Name: {details['name']}, Quantity: {details['quantity']}")
+            else:
+                print("Invalid reporting action. Please enter 'sales' or 'inventory'.")
         else:
-            print("Invalid action. Please enter 'pos', 'inventory', 'menu', 'recipe', or 'exit'.")
+            print("Invalid action. Please enter 'pos', 'inventory', 'menu', 'recipe', 'reporting', or 'exit'.")
 
 if __name__ == "__main__":
-    app = RestaurantSoftwareApp()
-    app.run()
     main()

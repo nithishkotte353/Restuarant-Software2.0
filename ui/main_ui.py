@@ -19,14 +19,14 @@ class RestaurantSoftwareApp:
         self.pos = POS(cosmos_endpoint, cosmos_key)
         self.inventory = Inventory(cosmos_endpoint, cosmos_key)
         self.menu = Menu(cosmos_endpoint, cosmos_key)
-        self.reporting = Reporting()
+        self.reporting = Reporting(cosmos_endpoint, cosmos_key)
         self.recipe = Recipe(cosmos_endpoint, cosmos_key)
 
     def run(self):
         st.title("Restaurant Software")
 
         # Create navigation
-        menu = ["POS", "Inventory", "Menu", "Reservation", "Customer", "Reporting", "Employee", "Recipe"]
+        menu = ["POS", "Inventory", "Menu", "Reporting", "Recipe"]
         choice = st.sidebar.selectbox("Select Module", menu)
 
         if choice == "POS":
@@ -37,6 +37,28 @@ class RestaurantSoftwareApp:
             self.menu_ui()
         elif choice == "Recipe":
             self.recipe_ui()
+        elif choice == "Reporting":
+            self.reporting_ui()
+
+    @st.cache_data
+    def fetch_pos_data(self):
+        # Fetch POS data from Cosmos DB or other sources
+        return self.pos.get_all_orders()
+
+    @st.cache_data
+    def fetch_inventory_data(self):
+        # Fetch inventory data from Cosmos DB or other sources
+        return self.inventory.get_all_items()
+
+    @st.cache_data
+    def fetch_menu_data(self):
+        # Fetch menu data from Cosmos DB or other sources
+        return self.menu.get_all_items()
+
+    @st.cache_data
+    def fetch_reporting_data(self):
+        # Fetch reporting data from Cosmos DB or other sources
+        return self.reporting.generate_sales_report(), self.reporting.generate_inventory_report()
 
     def pos_ui(self):
         st.header("POS Management")
@@ -45,7 +67,7 @@ class RestaurantSoftwareApp:
         
         if st.button("Create Order"):
             self.pos.create_order(order_id)
-            st.success(f"Order {order_id} created")
+            st.success(f"Order {order_id} created in POS")
         
         if st.button("Process Payment"):
             self.pos.process_payment(order_id, amount)
@@ -58,11 +80,11 @@ class RestaurantSoftwareApp:
         
         if st.button("Add Item"):
             self.inventory.add_inventory_item(item_name, quantity)
-            st.success(f"Added item {item_name} and quantity {quantity} to inventory")
+            st.success(f"Added item {item_name} with quantity {quantity} to inventory")
         
         if st.button("Remove Item"):
             self.inventory.remove_inventory_item(item_name, quantity)
-            st.success(f"Removed item with ID {item_name} and quantity {quantity} from inventory")
+            st.success(f"Removed item {item_name} with quantity {quantity} from inventory")
 
     def menu_ui(self):
         st.header("Menu Management")
@@ -79,11 +101,6 @@ class RestaurantSoftwareApp:
             self.menu.remove_item(item_id, category_id)
             st.success(f"Removed item with ID {item_id}")
 
-    def reporting_ui(self):
-        st.header("Reporting and Analytics")
-        if st.button("Generate Sales Report"):
-            self.reporting.generate_sales_report(self.pos.orders)
-
     def recipe_ui(self):
         st.header("Recipe Management")
         name = st.text_input("Recipe Name")
@@ -97,9 +114,21 @@ class RestaurantSoftwareApp:
         if st.button("Remove Recipe"):
             self.recipe.remove_recipe(name)
             st.success(f"Removed recipe {name}")
+        
         if st.button("Get Recipe"):
             recipe = self.recipe.get_recipe(name)
             st.write(recipe)
+
+    def reporting_ui(self):
+        st.header("Reporting")
+        
+        if st.button("Generate Sales Report"):
+            sales_report, _ = self.fetch_reporting_data()
+            st.write(sales_report)
+        
+        if st.button("Generate Inventory Report"):
+            _, inventory_report = self.fetch_reporting_data()
+            st.write(inventory_report)
 
 if __name__ == "__main__":
     app = RestaurantSoftwareApp()
